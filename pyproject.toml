@@ -4,20 +4,26 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "openrouter-free-agent"
-version = "0.1.0"
-description = "A small, CPU-only tool agent using OpenRouter-hosted models"
+version = "0.2.0"
+description = "Noki AI for Apple Silicon Mac, with an OpenRouter agent CLI"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["openai>=1.0", "pydantic>=2", "python-dotenv>=1", "rich>=13", "tzdata>=2024; platform_system == 'Windows'"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+desktop = ["PySide6>=6.10.1,<7", "pypdf>=6,<7"]
+desktop-build = ["PyInstaller>=6.16"]
 
 [project.scripts]
 free-agent = "free_agent.cli:main"
+noki-ai = "free_agent.desktop.app:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"free_agent.desktop" = ["assets/app-icon.png", "assets/NokiAI.icns", "assets/portrait.png", "assets/logo.png", "assets/chevron.svg", "assets/BricolageGrotesque.ttf", "assets/OFL-BricolageGrotesque.txt"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

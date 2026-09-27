@@ -1,8 +1,59 @@
-# Free Agent CLI — OpenRouter Agents Without a GPU
+# Noki AI
 
-## 🍼 Feed my baby
+Noki AI is a friendly macOS chat app for Apple Silicon. Bring your own OpenRouter API key, choose a model, ask questions, attach text documents, and let the agent use a small set of local tools when needed. Model inference happens through OpenRouter; no local GPU or model download is needed. The original Python CLI remains available.
 
-If this project helps you, [support my family on PayPal](https://paypal.me/RuffyTrinidad).
+**[Download the latest DMG](https://github.com/rakidoodle/openrouter-free-agent/releases/latest)** · 🍼 **[Buy me milk](https://www.paypal.com/paypalme/ruffytrinidad)**
+
+## Install the Mac app
+
+1. Download the latest `Noki-AI-…-macOS-arm64.dmg` from [GitHub Releases](https://github.com/rakidoodle/openrouter-free-agent/releases/latest).
+2. Open the DMG and drag **Noki AI** into **Applications**.
+3. Open Noki AI. This community build is not notarized by Apple, so macOS may show a security prompt. If it does, use Finder’s **Open** action for the app and confirm.
+4. Open **Settings**, paste your own [OpenRouter API key](https://openrouter.ai/settings/keys), then choose **Save settings**. The initial model is `openrouter/free`.
+
+No API key or personal model list is included in the download. Each person configures their own copy.
+
+## Use Noki AI
+
+- Type a question and press **Enter** or **Send**. Use **Shift+Enter** for a new line. Replies scroll into view automatically.
+- Click **+** in the message box to attach one UTF-8 text file or text-based PDF. Its name appears above the box; click **×** to remove it before sending. You can send a file with or without a typed question.
+- Open **Settings** to add an OpenRouter model ID such as `provider/model-name`, select it, and save. Choose a model that supports tool calling if you want the agent to use local tools.
+- Click **New chat** to clear the current conversation. The app does not save chat history between sessions.
+- When the agent proposes writing a workspace file, review the path and preview, then allow or deny it. The default folder is **Documents/Noki AI Workspace**; change it in Settings.
+- To remove your saved key, use **Settings → Remove saved key**. To remove a custom model, select it and use **Remove selected model**.
+
+## Response and file limitations
+
+- AI answers can be inaccurate, incomplete, or outdated. Check important facts and review any file changes before approving them.
+- `openrouter/free` can route requests to different models, so response style and quality can vary. Provider availability, quotas, rate limits, and model support can change. Some custom models do not support tool calls. See [OpenRouter’s free router](https://openrouter.ai/openrouter/free) and [tool support](https://openrouter.ai/docs/guides/features/tool-calling).
+- Noki AI uses text responses. It does not stream tokens, browse the web, interpret images, or remember chats after you quit. Conversation context is trimmed when it gets large.
+- One attachment can be sent per message. Text files must be UTF-8. PDFs need extractable text; scanned pages are not OCR’d. Files over 5 MB are rejected, and only the first 20,000 characters of extracted text are sent.
+- Requests need internet access and your own OpenRouter key. A custom paid model may incur charges on your OpenRouter account.
+
+## Privacy and security
+
+The API key, custom model list, selected model, and workspace location are saved only in your macOS user’s Application Support folder, outside the app bundle. The settings file is limited to your user account but contains the key in readable form for that account. Prompts and attached text are sent to OpenRouter for the selected model. The app does not load this repository’s `.env` or include any maintainer key, settings, chats, or workspace files in its DMG. File writes require your approval.
+
+## Run the Mac app from source
+
+Requires an Apple Silicon Mac and Python 3.11+. To run from source:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e '.[desktop]'
+noki-ai
+```
+
+To build a local Apple Silicon `.app` after installing `.[desktop,desktop-build]`:
+
+```bash
+./scripts/build_macos.sh
+```
+
+The resulting bundle is `dist/Noki AI.app`. It has only an ad hoc local signature; it is not Developer ID signed or notarized. The build includes application code, a transparent portrait logo, a rounded macOS icon, and locally bundled Bricolage Grotesque from Google Fonts. It does not include `.env`, the saved app settings, or workspace files. The font's OFL license is included in the app's assets.
+
+## Python CLI
 
 A small Python agent that calls OpenRouter-hosted models and can use a few explicitly registered local tools. The default model is `openrouter/free`. The laptop runs Python, validation, and tools; model inference runs through OpenRouter. **No local GPU, model weights, or local model server are required.**
 
@@ -43,7 +94,7 @@ Requires Python 3.11+ and an OpenRouter account. The free router and free model 
 
 5. Save the file. After installing below, run `free-agent doctor` to check the local setup. The ordinary doctor check does not make an API request. Run `free-agent doctor --live` only when you want to spend one request to test the key.
 
-The app loads `.env` locally, and `.gitignore` excludes it from Git. You can also set `OPENROUTER_API_KEY` in your environment instead of creating `.env`. Never add your real key to `.env.example`.
+The CLI loads `.env` locally, and `.gitignore` excludes it from Git. You can also set `OPENROUTER_API_KEY` in your environment instead of creating `.env`. Never add your real key to `.env.example`.
 
 ### Install and run
 
@@ -52,8 +103,6 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -e '.[dev]'
 ```
-
-On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1` and copy the settings file with `Copy-Item .env.example .env`. Then add your key as shown above.
 
 ```bash
 free-agent doctor
